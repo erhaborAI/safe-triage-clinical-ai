@@ -1,0 +1,21 @@
+{
+  "risk_labels": [
+    "low",
+    "moderate",
+    "urgent",
+    "emergent"
+  ],
+  "actions": [
+    "answer",
+    "defer",
+    "escalate"
+  ],
+  "confidence_threshold": 0.6,
+  "consistency_threshold": 0.67,
+  "critical_missing_fields": [
+    "heart_rate",
+    "systolic_bp",
+    "spo2",
+    "resp_rate"
+  ]
+}

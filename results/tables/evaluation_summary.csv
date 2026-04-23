@@ -1,0 +1,7 @@
+metric,value
+baseline_accuracy,0.68
+unsafe_raw_rate,0.0975
+unsafe_gated_rate,0.0
+defer_rate,0.28
+escalate_rate,0.5825
+answer_rate,0.1375
