@@ -100,6 +100,7 @@ def action_from_safety(row: dict, pred_label: str, pred_conf: float) -> tuple[st
 
     if risk_rule_trigger(row):
         reasons.append("High-risk rule trigger detected")
+        reasons.append("Model prediction may underestimate risk; safety rules override due to abnormal vital signs or high-risk conditions.")
         return "ESCALATE", reasons
 
     if row["missing_critical_info"]:
@@ -221,27 +222,31 @@ if submitted:
     pred_label, pred_conf, model_used = model_predict(row)
     action, reasons = action_from_safety(row, pred_label, pred_conf)
 
-    st.subheader("System Output")
+    st.subheader("SafeTriage Decision")
 
-    c1, c2, c3 = st.columns(3)
+    if action == "ANSWER":
+        st.success(f"Decision: {action}")
+    elif action == "DEFER":
+        st.warning(f"Decision: {action}")
+    else:
+        st.error(f"Decision: {action}")
+
+    c1, c2 = st.columns(2)
     c1.metric("Predicted Risk", pred_label.upper())
     c2.metric("Confidence", f"{pred_conf:.2f}")
-    c3.metric("Final Action", action)
 
-    st.markdown("### Model Layer")
-    st.write(f"Model used: **{model_used}**")
-    st.write(f"Baseline prediction: **{pred_label}**")
-    st.write(f"Prediction confidence: **{pred_conf:.2f}**")
-
-    st.markdown("### Safety Gate")
+    st.markdown("### Why this decision?")
     for reason in reasons:
         st.write(f"- {reason}")
 
+    st.markdown("### Model Summary")
+    st.write(f"Baseline prediction: **{pred_label.upper()}**")
+    st.write(f"Model used: **{model_used}**")
+
     st.markdown("### Clinical Interpretation")
     if action == "ANSWER":
-        st.success("The system would return its output because confidence is sufficient and no safety trigger requires deferral or escalation.")
+        st.write("The system would return its output because confidence is sufficient and no safety trigger requires deferral or escalation.")
     elif action == "DEFER":
-        st.warning("The system would defer because confidence is insufficient or critical information is missing.")
+        st.write("The system would defer because confidence is too low or critical information is missing.")
     else:
-        st.error("The system would escalate because the case is high-risk or operationally unsafe for autonomous handling.")
-        
+        st.write("The system would escalate because the case appears high-risk or unsafe for autonomous handling.")
