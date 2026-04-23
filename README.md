@@ -1,5 +1,5 @@
 # SafeTriage: Safety-Gated Clinical AI Triage
-[View Project PDF](Safe_Triage_Clinical_AI.pdf)
+[📄 Read Full Project Summary (PDF)](Safe_Triage_Clinical_AI.pdf)
 
 *A prototype clinical AI system that models when to answer, defer, or escalate under uncertainty, introducing a safety-gated framework for decision behavior in high-stakes care.*
 
