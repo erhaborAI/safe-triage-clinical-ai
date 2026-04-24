@@ -221,32 +221,71 @@ if submitted:
 
     pred_label, pred_conf, model_used = model_predict(row)
     action, reasons = action_from_safety(row, pred_label, pred_conf)
+    uncertainty = 1 - pred_conf
 
     st.subheader("SafeTriage Decision")
 
     if action == "ANSWER":
-        st.success(f"Decision: {action}")
+        st.success(f"Final Action: {action}")
     elif action == "DEFER":
-        st.warning(f"Decision: {action}")
+        st.warning(f"Final Action: {action}")
     else:
-        st.error(f"Decision: {action}")
+        st.error(f"Final Action: {action}")
 
-    c1, c2 = st.columns(2)
+    c1, c2, c3 = st.columns(3)
     c1.metric("Predicted Risk", pred_label.upper())
     c2.metric("Confidence", f"{pred_conf:.2f}")
+    c3.metric("Uncertainty", f"{uncertainty:.2f}")
+
+    st.markdown("### Model Layer")
+    st.write(f"Model used: **{model_used}**")
+    st.write(f"Baseline prediction: **{pred_label.upper()}**")
+    st.write(f"Prediction confidence: **{pred_conf:.2f}**")
+
+    st.markdown("### Counterfactual Behavior")
+    st.write(
+        f"Without the safety-gated action layer, the baseline model output would have been treated as: **{pred_label.upper()}**."
+    )
+
+    st.markdown("### Safety Gate")
+
+    if action == "ESCALATE":
+        st.error("Safety override: escalation required.")
+        st.write(
+            "The safety gate overrode the baseline model output because predefined high-risk clinical conditions were detected."
+        )
+    elif action == "DEFER":
+        st.warning("Safety hold: insufficient certainty for autonomous output.")
+        st.write(
+            "The safety gate deferred the baseline model output due to uncertainty or missing critical information that prevents safe autonomous decision-making."
+        )
+    else:
+        st.success("Safety gate: autonomous output permitted.")
+        st.write(
+            "The safety gate permitted the baseline model output because confidence was sufficient and no predefined safety trigger was detected."
+        )
 
     st.markdown("### Why this decision?")
     for reason in reasons:
-        st.write(f"- {reason}")
+        if reason == "Model prediction may underestimate risk; safety rules override due to abnormal vital signs or high-risk conditions.":
+            st.markdown(
+                "- **Model prediction may underestimate risk; safety constraints enforce override when clinical risk signals exceed acceptable thresholds.**"
+            )
+        else:
+            st.markdown(f"- **{reason}**")
 
-    st.markdown("### Model Summary")
-    st.write(f"Baseline prediction: **{pred_label.upper()}**")
-    st.write(f"Model used: **{model_used}**")
+    st.markdown("### Uncertainty and Reliability")
+    st.write(f"Uncertainty score: **{uncertainty:.2f}**")
 
-    st.markdown("### Clinical Interpretation")
-    if action == "ANSWER":
-        st.write("The system would return its output because confidence is sufficient and no safety trigger requires deferral or escalation.")
+    if action == "ESCALATE":
+        st.warning(
+            "Safety constraints override autonomous use when clinical risk signals conflict with or exceed model-derived confidence."
+        )
     elif action == "DEFER":
-        st.write("The system would defer because confidence is too low or critical information is missing.")
+        st.warning(
+            "Autonomous output is deferred because reliability is insufficient under the available information."
+        )
+    elif uncertainty > 0.30:
+        st.warning("Model reliability may be reduced because uncertainty is elevated.")
     else:
-        st.write("The system would escalate because the case appears high-risk or unsafe for autonomous handling.")
+        st.info("Model uncertainty is within the acceptable range for this prototype.")
