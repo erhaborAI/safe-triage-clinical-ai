@@ -173,7 +173,7 @@ def model_predict(row: dict):
     return pred, conf, "rule-based fallback model"
 
 
-st.title("SafeTriage Demo")
+st.title("SafeTriage")
 st.caption("Safety-gated clinical AI system for answer, defer, and escalate decisions under uncertainty.")
 
 with st.form("triage_form"):
