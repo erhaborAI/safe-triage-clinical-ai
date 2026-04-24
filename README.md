@@ -1,6 +1,6 @@
 # SafeTriage: Safety-Gated Clinical AI Triage
 
-## 🚀 Live Demo
+## ▶ Live Demo
 [Open Live Demo](https://safe-triage-clinical-ai-6crggxq8gtkatjbkzg6m2m.streamlit.app)
 
 ## 📄Project Summary
