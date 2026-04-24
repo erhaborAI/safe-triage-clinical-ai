@@ -1,4 +1,4 @@
-# SafeTriage: Safety-Gated Clinical AI Triage
+# SafeTriage: A Safety-Gated Framework for Clinical AI Decision Behavior Under Uncertainty
 
 ## ▶ Live Demo
 [Open Live Demo](https://safe-triage-clinical-ai-6crggxq8gtkatjbkzg6m2m.streamlit.app)
@@ -10,7 +10,7 @@
 
 ## Overview
 
-SafeTriage is a prototype clinical AI system designed to evaluate how AI should behave under uncertainty in high-stakes care. Rather than optimizing for prediction alone, the system introduces a safety-gated action layer that determines whether to answer, defer, or escalate.
+SafeTriage is a prototype clinical AI system designed to model decision under uncertainty in high-stakes care. Rather than optimizing for prediction alone, the system introduces a safety-gated action layer that determines whether to answer, defer, or escalate.
 
 ## Core Idea
 
